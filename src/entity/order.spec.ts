@@ -21,15 +21,24 @@ describe("Order unit tests", () => {
   });
 
   it("should calculate total", () => {
-    const item = new OrderItem("123", "item 1", 100);
-    const order = new Order("123", "123", [item]);
+    const item = new OrderItem("i1", "item 1", 100, "p1", 2);
+    const item2 = new OrderItem("i1", "item 2", 200, "p2", 2);
+
+    const order = new Order("o1", "c1", [item]);
 
     let total = order.total();
 
-    expect(total).toBe(100);
-
-    const order2 = new Order("123", "123", [item, item]);
-    total = order2.total();
     expect(total).toBe(200);
+
+    const order2 = new Order("123", "123", [item, item2]);
+    total = order2.total();
+    expect(total).toBe(600);
+  });
+
+  it("should throw error if the item qtd is less or equal zero", () => {
+    expect(() => {
+      const item = new OrderItem("i1", "item 1", 100, "p1", 0);
+      const order = new Order("o1", "c1", [item]);
+    }).toThrowError("Quantity must be grater than zero");
   });
 });
