@@ -29,6 +29,10 @@ export default class Customer {
     return this._id;
   }
 
+  changeAddress(address: Address) {
+    this._address = address;
+  }
+
   validate() {
     if (this._id.length === 0) {
       throw new Error("Id is required");
