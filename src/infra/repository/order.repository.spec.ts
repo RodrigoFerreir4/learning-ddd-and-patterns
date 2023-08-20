@@ -145,4 +145,67 @@ describe("Order repository test", () => {
 
     expect(ordersFound).toStrictEqual([order]);
   });
+
+  it("should update a order", async () => {
+    const customerRepository = new CustomerRepository();
+    const customer = new Customer("123", "John Doe");
+    const address = new Address("street", "city", 1, "zipcode");
+    customer.changeAddress(address);
+    await customerRepository.create(customer);
+
+    const productRepository = new ProductRepository();
+    const product = new Product("123", "Product 1", 10);
+    await productRepository.create(product);
+
+    const orderItem = new OrderItem(
+      "1",
+      product.name,
+      product.price,
+      product.id,
+      2
+    );
+
+    const order = new Order("123", "123", [orderItem]);
+
+    const orderRepository = new OrderRepository();
+    await orderRepository.create(order);
+
+    const orderModel = await OrderModel.findOne({
+      where: { id: order.id },
+      include: ["items"],
+    });
+
+    const updateOrder = orderModel;
+    updateOrder.total = 40;
+    await updateOrder.save();
+    await orderRepository.update(order);
+
+    const updateOrderItemModel = orderModel.items[0];
+    updateOrderItemModel.quantity = 3;
+    updateOrderItemModel.price = 20;
+    updateOrderItemModel.name = "Product 2";
+    await updateOrderItemModel.save();
+    await updateOrderItemModel.update(order);
+
+    const orderFound = await OrderModel.findOne({
+      where: { id: order.id },
+      include: ["items"],
+    });
+    console.log(orderFound);
+    expect(orderFound.toJSON()).toEqual({
+      id: orderModel.id,
+      customer_id: orderModel.customer_id,
+      items: [
+        {
+          id: updateOrderItemModel.id,
+          order_id: updateOrderItemModel.order_id,
+          name: updateOrderItemModel.name,
+          price: updateOrderItemModel.price,
+          product_id: updateOrderItemModel.product_id,
+          quantity: updateOrderItemModel.quantity,
+        },
+      ],
+      total: updateOrderItemModel.price,
+    });
+  });
 });
