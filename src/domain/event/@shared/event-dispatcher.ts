@@ -16,8 +16,6 @@ export default class EventDispatcher implements EventDispatcherInterface {
     this.eventHandlers[eventName].push(eventHandler);
   }
 
-  notify(event: EventInterface): void {}
-
   unregister(eventName: string, eventHandler: EventHandlerInterface): void {
     if (this.eventHandlers[eventName]) {
       const index = this.eventHandlers[eventName].indexOf(eventHandler);
@@ -29,5 +27,14 @@ export default class EventDispatcher implements EventDispatcherInterface {
 
   unregisterAll(): void {
     this.eventHandlers = {};
+  }
+
+  notify(event: EventInterface): void {
+    const eventName = event.constructor.name;
+    if (this.eventHandlers[eventName]) {
+      this.eventHandlers[eventName].forEach((eventHandler) => {
+        eventHandler.handle(event);
+      });
+    }
   }
 }
