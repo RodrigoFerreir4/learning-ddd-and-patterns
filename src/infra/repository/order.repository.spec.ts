@@ -1,10 +1,5 @@
 import { Sequelize } from "sequelize-typescript";
 
-import Address from "../../domain/entity/address";
-import Customer from "../../domain/entity/customer";
-import Order from "../../domain/entity/order";
-import OrderItem from "../../domain/entity/order_item";
-import Product from "../../domain/entity/product";
 import CustomerModel from "../db/sequelize/model/customer.model";
 import OrderItemModel from "../db/sequelize/model/order-item.model";
 import OrderModel from "../db/sequelize/model/order.model ";
@@ -12,6 +7,11 @@ import ProductModel from "../db/sequelize/model/product.model";
 import CustomerRepository from "./customer.repository";
 import OrderRepository from "./order.repository";
 import ProductRepository from "./product.repository";
+import { Customer } from "../../domain/customer/entities/customer";
+import { Address } from "../../domain/customer/value-objects/address";
+import { Product } from "../../domain/product/entities/product";
+import { OrderItem } from "../../domain/checkout/entities/order-item";
+import { Order } from "../../domain/checkout/entities/order";
 
 describe("Order repository test", () => {
   let sequelize: Sequelize;
@@ -40,7 +40,7 @@ describe("Order repository test", () => {
   it("should create a order", async () => {
     const customerRepository = new CustomerRepository();
     const customer = new Customer("123", "John Doe");
-    const address = new Address("street", "city", 1, "zipcode");
+    const address = new Address("street", 1, "city", "zipcode");
     customer.changeAddress(address);
     await customerRepository.create(customer);
 
@@ -52,8 +52,8 @@ describe("Order repository test", () => {
       "1",
       product.name,
       product.price,
-      product.id,
-      2
+      2,
+      product.id
     );
 
     const order = new Order("123", "123", [orderItem]);
@@ -86,7 +86,7 @@ describe("Order repository test", () => {
   it("should find a order", async () => {
     const customerRepository = new CustomerRepository();
     const customer = new Customer("123", "John Doe");
-    const address = new Address("street", "city", 1, "zipcode");
+    const address = new Address("street", 1, "city", "zipcode");
     customer.changeAddress(address);
     await customerRepository.create(customer);
 
@@ -98,8 +98,8 @@ describe("Order repository test", () => {
       "1",
       product.name,
       product.price,
-      product.id,
-      2
+      2,
+      product.id
     );
 
     const order = new Order("123", "123", [orderItem]);
@@ -120,7 +120,7 @@ describe("Order repository test", () => {
   it("should find all orders", async () => {
     const customerRepository = new CustomerRepository();
     const customer = new Customer("123", "John Doe");
-    const address = new Address("street", "city", 1, "zipcode");
+    const address = new Address("street", 1, "city", "zipcode");
     customer.changeAddress(address);
     await customerRepository.create(customer);
 
@@ -132,8 +132,8 @@ describe("Order repository test", () => {
       "1",
       product.name,
       product.price,
-      product.id,
-      2
+      2,
+      product.id
     );
 
     const order = new Order("123", "123", [orderItem]);
@@ -149,7 +149,7 @@ describe("Order repository test", () => {
   it("should update a order", async () => {
     const customerRepository = new CustomerRepository();
     const customer = new Customer("123", "John Doe");
-    const address = new Address("street", "city", 1, "zipcode");
+    const address = new Address("street", 1, "city", "zipcode");
     customer.changeAddress(address);
     await customerRepository.create(customer);
 
@@ -161,8 +161,8 @@ describe("Order repository test", () => {
       "1",
       product.name,
       product.price,
-      product.id,
-      2
+      2,
+      product.id
     );
 
     const order = new Order("123", "123", [orderItem]);

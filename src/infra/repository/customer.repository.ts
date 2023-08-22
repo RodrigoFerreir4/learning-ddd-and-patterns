@@ -1,6 +1,6 @@
-import Address from "../../domain/entity/address";
-import Customer from "../../domain/entity/customer";
-import CustomerRepositoryInterface from "../../domain/repository/customer-repository.interface";
+import { Customer } from "../../domain/customer/entities/customer";
+import { CustomerRepositoryInterface } from "../../domain/customer/repositories/customer-repository.interface";
+import { Address } from "../../domain/customer/value-objects/address";
 import CustomerModel from "../db/sequelize/model/customer.model";
 
 export default class CustomerRepository implements CustomerRepositoryInterface {
@@ -8,10 +8,10 @@ export default class CustomerRepository implements CustomerRepositoryInterface {
     await CustomerModel.create({
       id: entity.id,
       name: entity.name,
-      street: entity.Address.street,
-      number: entity.Address.number,
-      zipcode: entity.Address.zip,
-      city: entity.Address.city,
+      street: entity.address.street,
+      number: entity.address.number,
+      zipcode: entity.address.zipcode,
+      city: entity.address.city,
       active: entity.isActive(),
       rewardPoints: entity.rewardPoints,
     });
@@ -21,10 +21,10 @@ export default class CustomerRepository implements CustomerRepositoryInterface {
     await CustomerModel.update(
       {
         name: entity.name,
-        street: entity.Address.street,
-        number: entity.Address.number,
-        zipcode: entity.Address.zip,
-        city: entity.Address.city,
+        street: entity.address.street,
+        number: entity.address.number,
+        zipcode: entity.address.zipcode,
+        city: entity.address.city,
         active: entity.isActive(),
         rewardPoints: entity.rewardPoints,
       },
@@ -52,9 +52,9 @@ export default class CustomerRepository implements CustomerRepositoryInterface {
     const customer = new Customer(id, customerModel.name);
     const address = new Address(
       customerModel.street,
-      customerModel.city,
       customerModel.number,
-      customerModel.zipcode
+      customerModel.zipcode,
+      customerModel.city
     );
     customer.changeAddress(address);
     return customer;
@@ -68,9 +68,9 @@ export default class CustomerRepository implements CustomerRepositoryInterface {
       customer.addRewardPoints(customerModels.rewardPoints);
       const address = new Address(
         customerModels.street,
-        customerModels.city,
         customerModels.number,
-        customerModels.zipcode
+        customerModels.zipcode,
+        customerModels.city
       );
       customer.changeAddress(address);
       if (customerModels.active) {
